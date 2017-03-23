@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="37">
+    <author>TyKonKet (Team FSI Modding)</author>
+    <version>1.0.0</version>
+    <title>
+        <en>Automatic Cutters</en>
+    </title>
+    <description>
+        <en>
+            <![CDATA[Makes the lowering and rising of combines-cutter automatic.
+This will avoid ugly turns at the end of the field.
+You can also choose on every single cutter to use or not this feature.
+This is not properly a realistic feature, but if you also like to play "arcade mode" maybe this mod is right for you.
+]]>
+        </en>
+        <de>
+            <![CDATA[Macht das Anheben und Absenken von Mähdreschern Schneider automatisch.
+Das wird hässlich Wendungen am Ende des Feldes zu vermeiden.
+Sie können auch jeden einzelnen Schneider wählen, um auf die Verwendung oder nicht diese Funktion.
+Das ist nicht richtig ein realistisches Feature, aber wenn Sie auch das Richtige für Sie vielleicht dieser Mod ist "Arcade-Modus" gerne spielen.
+]]>
+        </de>
+        <fr>
+            <![CDATA[Réduit l'abaissement et la montée des moissonneuses-batteuses automatiques.
+Cela évitera des virages laids à la fin du champ.
+Vous pouvez également choisir sur chaque découpeur à utiliser ou non cette fonctionnalité.
+Ce n'est pas vraiment une fonctionnalité réaliste, mais si vous aussi vous aimez jouer "mode arcade" peut-être ce mod est bon pour vous.
+]]>
+        </fr>
+    </description>
+    <iconFilename>icon.dds</iconFilename>
+    <multiplayer supported="true" />
+    <extraSourceFiles>
+        <sourceFile filename="extensions/combineExtensions.lua" />
+        <sourceFile filename="register.lua" />
+    </extraSourceFiles>
+    <specializations>
+        <specialization name="autoCutter" className="AutoCutter" filename="specializations/autoCutter.lua"/>
+    </specializations>
+    <inputBindings>
+        <input name="AC_TOGGLE" category="VEHICLE" key1="KEY_lshift KEY_v" device="1" visible="true" />
+    </inputBindings>
+    <l10n>
+        <text name="input_AC_TOGGLE">
+            <en>Enable/Disable automatic cutter</en>
+            <de>Aktivieren / Deaktivieren des automatischen Schneiders</de>
+            <fr>Activer / Désactiver le coupeur automatique</fr>
+        </text>
+        <text name="AC_ENABLE_AUTO_CUTTER">
+            <en>Enable automatic cutter</en>
+            <de>Automatikschneider aktivieren</de>
+            <fr>Activer le coupeur automatique</fr>
+        </text>
+        <text name="AC_DISABLE_AUTO_CUTTER">
+            <en>Disable automatic cutter</en>
+            <de>Automatische Schneidvorrichtung deaktivieren</de>
+            <fr>Désactiver le coupeur automatique</fr>
+        </text>
+    </l10n>
+    <translatedBy>
+        <en>TyKonKet</en>
+        <de></de>
+        <fr></fr>
+    </translatedBy>
+</modDesc>
