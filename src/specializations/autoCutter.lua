@@ -64,9 +64,10 @@ end
 
 function AutoCutter:updateTick(dt)
     AutoCutter.updateExtendedTestAreas(self);
-    if self.reelStarted then
-        if self.isClient then
-            local fruitAhead = false;
+    local combine = self:getCombine();
+    if self.reelStarted and combine:getLastSpeed() > 0.5 then
+        local fruitAhead = false;
+        if self.movingDirection == self.cutterMovingDirection then
             for k, testArea in pairs(self.extendedCutterTestAreas) do
                 local fruitValue, total = AutoCutter.getFruitArea(self.currentInputFruitType, testArea.x, testArea.z, testArea.widthX, testArea.widthZ, testArea.heightX, testArea.heightZ, self.allowsForageGrowhtState)
                 if fruitValue > 0 then
@@ -74,16 +75,14 @@ function AutoCutter:updateTick(dt)
                     break;
                 end
             end
-            fruitAhead = fruitAhead and self.movingDirection == self.cutterMovingDirection;
-            if self.fruitAhead ~= fruitAhead then
-                local combine = self:getCombine();
-                for cutter, implement in pairs(combine.attachedCutters) do
-                    if cutter == self and not self.isHired and self.automaticCutterEnabled then
-                        combine:setJointMoveDown(implement.jointDescIndex, fruitAhead, true);
-                    end
+        end
+        if self.fruitAhead ~= fruitAhead then
+            for cutter, implement in pairs(combine.attachedCutters) do
+                if cutter == self and not self.isHired and self.automaticCutterEnabled then
+                    combine:setJointMoveDown(implement.jointDescIndex, fruitAhead, true);
                 end
-                self.fruitAhead = fruitAhead;
             end
+            self.fruitAhead = fruitAhead;
         end
     end
     if self.oldSpeedLimit == nil then
@@ -99,7 +98,11 @@ end
 function AutoCutter:draw()
     if AutoCutter.debug then
         for k, testArea in pairs(self.extendedCutterTestAreas) do
-            DebugUtil.drawDebugParallelogram(testArea.x, testArea.z, testArea.widthX, testArea.widthZ, testArea.heightX, testArea.heightZ, 0.1, 0, 1, 0, 0.1);
+            if self.fruitAhead then
+                DebugUtil.drawDebugParallelogram(testArea.x, testArea.z, testArea.widthX, testArea.widthZ, testArea.heightX, testArea.heightZ, 0.1, 0, 1, 0, 0.1);
+            else
+                DebugUtil.drawDebugParallelogram(testArea.x, testArea.z, testArea.widthX, testArea.widthZ, testArea.heightX, testArea.heightZ, 0.1, 1, 0, 0, 0.1);
+            end
         end
     end
     if self.automaticCutterEnabled then
@@ -120,18 +123,22 @@ end
 
 function AutoCutter:updateExtendedTestAreas()
     for k, testArea in pairs(self.cutterTestAreas) do
-        --local sx, sy, sz = getTranslation(testArea.start);
-        --setTranslation(testArea.start, sx + 0.25, sy, sz);
-        local x, _, z = getWorldTranslation(testArea.start);
-        --setTranslation(testArea.start, sx, sy, sz);
+        local sx, sy, sz = getTranslation(testArea.start);
         local wx, wy, wz = getTranslation(testArea.width);
-        setTranslation(testArea.width, wx, wy, wz);
-        local x1, _, z1 = getWorldTranslation(testArea.width);
-        setTranslation(testArea.width, wx, wy, wz);
         local hx, hy, hz = getTranslation(testArea.height);
-        setTranslation(testArea.height, hx, hy, hz * 2);
+        
+        setTranslation(testArea.start, sx + wx / 3, sy, sz - hz * 2.5);
+        setTranslation(testArea.width, wx / 3, wy, wz);
+        setTranslation(testArea.height, hx, hy, hz * 5);
+        
+        local x, _, z = getWorldTranslation(testArea.start);
+        local x1, _, z1 = getWorldTranslation(testArea.width);
         local x2, _, z2 = getWorldTranslation(testArea.height);
+        
+        setTranslation(testArea.start, sx, sy, sz);
+        setTranslation(testArea.width, wx, wy, wz);
         setTranslation(testArea.height, hx, hy, hz);
+        
         local x, z, widthX, widthZ, heightX, heightZ = Utils.getXZWidthAndHeight(nil, x, z, x1, z1, x2, z2);
         self.extendedCutterTestAreas[k] = {};
         self.extendedCutterTestAreas[k].x = x;
@@ -161,6 +168,7 @@ function AutoCutter.getFruitArea(fruitId, x, z, widthX, widthZ, heightX, heightZ
     setDensityReturnValueShift(id, 0);
     return ret, total, growthState;
 end
+
 function AutoCutter:doCheckSpeedLimit(superFunc)
     local parent = false;
     if superFunc ~= nil then
