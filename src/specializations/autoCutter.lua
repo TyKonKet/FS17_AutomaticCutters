@@ -44,6 +44,7 @@ end
 
 function AutoCutter:postLoad(savegame)
     AutoCutter.print("AutoCutter:postLoad()");
+    AutoCutter.loadSamples();
     AutoCutter.updateExtendedTestAreas(self);
     if savegame ~= nil and not savegame.resetVehicles then
         self.automaticCutterEnabled = Utils.getNoNil(getXMLBool(savegame.xmlFile, savegame.key .. "#automaticCutterEnabled"), self.automaticCutterEnabled);
@@ -51,7 +52,6 @@ function AutoCutter:postLoad(savegame)
     self.schemaOverlays = {};
     self.schemaOverlays.overlay = self.schemaOverlay.overlay;
     self.schemaOverlays.overlaySelected = self.schemaOverlay.overlaySelected;
-    AutoCutter.print("AutoCutter.dir:" .. AutoCutter.dir);
     self.schemaOverlays.overlayAuto = Overlay:new("", Utils.getFilename("hud/implementSchema.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
     self.schemaOverlays.overlaySelectedAuto = Overlay:new("", Utils.getFilename("hud/implementSchemaSelected.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
     AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
@@ -98,6 +98,11 @@ function AutoCutter:updateTick(dt)
             for cutter, implement in pairs(combine.attachedCutters) do
                 if cutter == self and not self.isHired and self.automaticCutterEnabled then
                     combine:setJointMoveDown(implement.jointDescIndex, fruitAhead, true);
+                    if fruitAhead then
+                        AutoCutter.playSample(self, combine, AutoCutter.upSample);
+                    else
+                        AutoCutter.playSample(self, combine, AutoCutter.downSample);
+                    end
                 end
             end
             self.fruitAhead = fruitAhead;
@@ -148,6 +153,14 @@ function AutoCutter:delete()
     end
     if self.schemaOverlays.overlaySelectedAuto ~= nil then
         self.schemaOverlays.overlaySelectedAuto:delete();
+    end
+    if AutoCutter.downSample ~= nil then
+        delete(AutoCutter.downSample);
+        AutoCutter.downSample = nil;
+    end
+    if AutoCutter.upSample ~= nil then
+        delete(AutoCutter.upSample);
+        AutoCutter.upSample = nil;
     end
 end
 
@@ -205,4 +218,27 @@ function AutoCutter:doCheckSpeedLimit(superFunc)
         parent = superFunc(self);
     end
     return parent or self.reelStarted;
+end
+
+function AutoCutter.loadSamples()
+    if AutoCutter.downSample == nil then
+        local fileName = Utils.getFilename("sounds/cutter_down.wav", AutoCutter.dir);
+        AutoCutter.downSample = createSample(fileName);
+        loadSample(AutoCutter.downSample, fileName, false);
+    end
+    if AutoCutter.upSample == nil then
+        local fileName = Utils.getFilename("sounds/cutter_up.wav", AutoCutter.dir);
+        AutoCutter.upSample = createSample(fileName);
+        loadSample(AutoCutter.upSample, fileName, false);
+    end
+end
+
+function AutoCutter:playSample(combine, sample)
+    if combine.isEntered then
+        local v = 0.7;
+        if combine:getIsIndoorCameraActive() then
+            v = 1;
+        end
+        playSample(sample, 1, v, 0);
+    end
 end
