@@ -48,6 +48,13 @@ function AutoCutter:postLoad(savegame)
     if savegame ~= nil and not savegame.resetVehicles then
         self.automaticCutterEnabled = Utils.getNoNil(getXMLBool(savegame.xmlFile, savegame.key .. "#automaticCutterEnabled"), self.automaticCutterEnabled);
     end
+    self.schemaOverlays = {};
+    self.schemaOverlays.overlay = self.schemaOverlay.overlay;
+    self.schemaOverlays.overlaySelected = self.schemaOverlay.overlaySelected;
+    AutoCutter.print("AutoCutter.dir:" .. AutoCutter.dir);
+    self.schemaOverlays.overlayAuto = Overlay:new("", Utils.getFilename("hud/implementSchema.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
+    self.schemaOverlays.overlaySelectedAuto = Overlay:new("", Utils.getFilename("hud/implementSchemaSelected.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
+    AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
 end
 
 function AutoCutter:getSaveAttributesAndNodes(nodeIdent)
@@ -56,9 +63,20 @@ function AutoCutter:getSaveAttributesAndNodes(nodeIdent)
     return attributes, nodes;
 end
 
+function AutoCutter:setSchemaOverlay(automaticCutterEnabled)
+    if not automaticCutterEnabled then
+        self.schemaOverlay.overlay = self.schemaOverlays.overlay;
+        self.schemaOverlay.overlaySelected = self.schemaOverlays.overlaySelected;
+    else
+        self.schemaOverlay.overlay = self.schemaOverlays.overlayAuto;
+        self.schemaOverlay.overlaySelected = self.schemaOverlays.overlaySelectedAuto;
+    end
+end
+
 function AutoCutter:update(dt)
     if InputBinding.hasEvent(InputBinding.AC_TOGGLE, false) then
         self.automaticCutterEnabled = not self.automaticCutterEnabled;
+        AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
     end
 end
 
@@ -119,6 +137,18 @@ function AutoCutter:mouseEvent(posX, posY, isDown, isUp, button)
 end
 
 function AutoCutter:delete()
+    if self.schemaOverlays.overlay ~= nil then
+        self.schemaOverlays.overlay:delete();
+    end
+    if self.schemaOverlays.overlaySelected ~= nil then
+        self.schemaOverlays.overlaySelected:delete();
+    end
+    if self.schemaOverlays.overlayAuto ~= nil then
+        self.schemaOverlays.overlayAuto:delete();
+    end
+    if self.schemaOverlays.overlaySelectedAuto ~= nil then
+        self.schemaOverlays.overlaySelectedAuto:delete();
+    end
 end
 
 function AutoCutter:updateExtendedTestAreas()
