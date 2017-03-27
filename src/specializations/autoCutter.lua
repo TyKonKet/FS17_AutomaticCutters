@@ -83,7 +83,7 @@ end
 function AutoCutter:updateTick(dt)
     AutoCutter.updateExtendedTestAreas(self);
     local combine = self:getCombine();
-    if self.reelStarted and combine:getLastSpeed() > 0.5 then
+    if self.reelStarted and combine:getLastSpeed() > 1 then
         local fruitAhead = false;
         if self.movingDirection == self.cutterMovingDirection then
             for k, testArea in pairs(self.extendedCutterTestAreas) do
@@ -170,7 +170,7 @@ function AutoCutter:updateExtendedTestAreas()
         local wx, wy, wz = getTranslation(testArea.width);
         local hx, hy, hz = getTranslation(testArea.height);
         
-        setTranslation(testArea.start, sx + wx / 3, sy, sz - hz * 2.5);
+        setTranslation(testArea.start, sx + wx / 3, sy, sz - hz * 3);
         setTranslation(testArea.width, wx / 3, wy, wz);
         setTranslation(testArea.height, hx, hy, hz * 5);
         
