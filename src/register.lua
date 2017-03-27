@@ -10,7 +10,7 @@ AutomaticCutters.specialization.title = "AutoCutter";
 AutomaticCutters.specialization.name = "autoCutter";
 -- vehicleTypeName = true (conveyorTrailerHireable = true)
 AutomaticCutters.specialization.blackList = {};
-AutomaticCutters.debug = true;
+AutomaticCutters.debug = false;
 
 function AutomaticCutters:print(txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, txt9)
     if self.debug then
