@@ -38,5 +38,5 @@ POPD
 ECHO #################################### %mod_name% built ####################################
 
 ENDLOCAL
-CALL "C:\Program Files (x86)\Farming Simulator 2017\FarmingSimulator2017.exe" -restart
+CALL "C:\Program Files (x86)\Farming Simulator 2017\FarmingSimulator2017.exe" -cheats -restart
 EXIT
