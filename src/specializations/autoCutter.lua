@@ -49,12 +49,17 @@ function AutoCutter:postLoad(savegame)
     if savegame ~= nil and not savegame.resetVehicles then
         self.automaticCutterEnabled = Utils.getNoNil(getXMLBool(savegame.xmlFile, savegame.key .. "#automaticCutterEnabled"), self.automaticCutterEnabled);
     end
-    self.schemaOverlays = {};
-    self.schemaOverlays.overlay = self.schemaOverlay.overlay;
-    self.schemaOverlays.overlaySelected = self.schemaOverlay.overlaySelected;
-    self.schemaOverlays.overlayAuto = Overlay:new("", Utils.getFilename("hud/implementSchema.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
-    self.schemaOverlays.overlaySelectedAuto = Overlay:new("", Utils.getFilename("hud/implementSchemaSelected.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
-    AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
+    if #self.cutterTestAreas <= 0 then
+        self.automaticCutterActive = false;
+    else
+        self.automaticCutterActive = true;
+        self.schemaOverlays = {};
+        self.schemaOverlays.overlay = self.schemaOverlay.overlay;
+        self.schemaOverlays.overlaySelected = self.schemaOverlay.overlaySelected;
+        self.schemaOverlays.overlayAuto = Overlay:new("", Utils.getFilename("hud/implementSchema.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
+        self.schemaOverlays.overlaySelectedAuto = Overlay:new("", Utils.getFilename("hud/implementSchemaSelected.png", AutoCutter.dir), 0, 0, 0.5 * g_currentMission.vehicleSchemaOverlayScaleX, 0.5 * g_currentMission.vehicleSchemaOverlayScaleY);
+        AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
+    end
 end
 
 function AutoCutter:getSaveAttributesAndNodes(nodeIdent)
@@ -74,38 +79,40 @@ function AutoCutter:setSchemaOverlay(automaticCutterEnabled)
 end
 
 function AutoCutter:update(dt)
-    if InputBinding.hasEvent(InputBinding.AC_TOGGLE, false) then
+    if InputBinding.hasEvent(InputBinding.AC_TOGGLE, false) and self.automaticCutterActive then
         self.automaticCutterEnabled = not self.automaticCutterEnabled;
         AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
     end
 end
 
 function AutoCutter:updateTick(dt)
-    AutoCutter.updateExtendedTestAreas(self);
-    local combine = self:getCombine();
-    if self.reelStarted and combine:getLastSpeed() > 1 then
-        local fruitAhead = false;
-        if self.movingDirection == self.cutterMovingDirection then
-            for k, testArea in pairs(self.extendedCutterTestAreas) do
-                local fruitValue, total = AutoCutter.getFruitArea(self.currentInputFruitType, testArea.x, testArea.z, testArea.widthX, testArea.widthZ, testArea.heightX, testArea.heightZ, self.allowsForageGrowhtState)
-                if fruitValue > 0 then
-                    fruitAhead = true;
-                    break;
-                end
-            end
-        end
-        if self.fruitAhead ~= fruitAhead then
-            for cutter, implement in pairs(combine.attachedCutters) do
-                if cutter == self and not self.isHired and self.automaticCutterEnabled then
-                    combine:setJointMoveDown(implement.jointDescIndex, fruitAhead, true);
-                    if fruitAhead then
-                        AutoCutter.playSample(self, combine, AutoCutter.upSample);
-                    else
-                        AutoCutter.playSample(self, combine, AutoCutter.downSample);
+    if self.automaticCutterActive then
+        AutoCutter.updateExtendedTestAreas(self);
+        local combine = self:getCombine();
+        if self.reelStarted and combine:getLastSpeed() > 1 then
+            local fruitAhead = false;
+            if self.movingDirection == self.cutterMovingDirection then
+                for k, testArea in pairs(self.extendedCutterTestAreas) do
+                    local fruitValue, total = AutoCutter.getFruitArea(self.currentInputFruitType, testArea.x, testArea.z, testArea.widthX, testArea.widthZ, testArea.heightX, testArea.heightZ, self.allowsForageGrowhtState)
+                    if fruitValue > 0 then
+                        fruitAhead = true;
+                        break;
                     end
                 end
             end
-            self.fruitAhead = fruitAhead;
+            if self.fruitAhead ~= fruitAhead then
+                for cutter, implement in pairs(combine.attachedCutters) do
+                    if cutter == self and not self.isHired and self.automaticCutterEnabled then
+                        combine:setJointMoveDown(implement.jointDescIndex, fruitAhead, true);
+                        if fruitAhead then
+                            AutoCutter.playSample(self, combine, AutoCutter.upSample);
+                        else
+                            AutoCutter.playSample(self, combine, AutoCutter.downSample);
+                        end
+                    end
+                end
+                self.fruitAhead = fruitAhead;
+            end
         end
     end
     if self.oldSpeedLimit == nil then
@@ -119,7 +126,7 @@ function AutoCutter:updateTick(dt)
 end
 
 function AutoCutter:draw()
-    if AutoCutter.debug then
+    if AutoCutter.debug and self.automaticCutterActive then
         for k, testArea in pairs(self.extendedCutterTestAreas) do
             if self.fruitAhead then
                 DebugUtil.drawDebugParallelogram(testArea.x, testArea.z, testArea.widthX, testArea.widthZ, testArea.heightX, testArea.heightZ, 0.1, 0, 1, 0, 0.1);
@@ -128,6 +135,7 @@ function AutoCutter:draw()
             end
         end
     end
+    if not self.automaticCutterActive then return; end
     if self.automaticCutterEnabled then
         g_currentMission:addHelpButtonText(g_i18n:getText("AC_DISABLE_AUTO_CUTTER"), InputBinding.AC_TOGGLE, nil, GS_PRIO_HIGH);
     else
@@ -142,17 +150,19 @@ function AutoCutter:mouseEvent(posX, posY, isDown, isUp, button)
 end
 
 function AutoCutter:delete()
-    if self.schemaOverlays.overlay ~= nil then
-        self.schemaOverlays.overlay:delete();
-    end
-    if self.schemaOverlays.overlaySelected ~= nil then
-        self.schemaOverlays.overlaySelected:delete();
-    end
-    if self.schemaOverlays.overlayAuto ~= nil then
-        self.schemaOverlays.overlayAuto:delete();
-    end
-    if self.schemaOverlays.overlaySelectedAuto ~= nil then
-        self.schemaOverlays.overlaySelectedAuto:delete();
+    if self.automaticCutterActive then
+        if self.schemaOverlays.overlay ~= nil then
+            self.schemaOverlays.overlay:delete();
+        end
+        if self.schemaOverlays.overlaySelected ~= nil then
+            self.schemaOverlays.overlaySelected:delete();
+        end
+        if self.schemaOverlays.overlayAuto ~= nil then
+            self.schemaOverlays.overlayAuto:delete();
+        end
+        if self.schemaOverlays.overlaySelectedAuto ~= nil then
+            self.schemaOverlays.overlaySelectedAuto:delete();
+        end
     end
     if AutoCutter.downSample ~= nil then
         delete(AutoCutter.downSample);
