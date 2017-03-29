@@ -14,10 +14,10 @@ This is not properly a realistic feature, but if you also like to play "arcade m
 ]]>
         </en>
         <de>
-            <![CDATA[Macht das Anheben und Absenken von Mähdreschern Schneider automatisch.
+            <![CDATA[Übernimmt das anheben und absenken des Schneidwerks
 Das wird hässlich Wendungen am Ende des Feldes zu vermeiden.
 Sie können auch bei jedem einzelnen Cutter wählen, um diese Funktion mit SHIFT + V zu verwenden.
-Das ist nicht richtig ein realistisches Feature, aber wenn Sie auch das Richtige für Sie vielleicht dieser Mod ist "Arcade-Modus" gerne spielen.
+Dies ist nicht unbedingt ein realistische Option, aber evtl. ist dies genau der richtige Mod für Sie wenn Sie gerne den "Arcade-Modus" spielen.
 ]]>
         </de>
         <fr>
@@ -43,19 +43,19 @@ Ce n'est pas vraiment une fonctionnalité réaliste, mais si vous aussi vous aim
     <l10n>
         <text name="input_AC_TOGGLE">
             <en>Enable/Disable automatic cutter</en>
-            <de>Aktivieren / Deaktivieren des automatischen Schneiders</de>
+            <de>Aktivieren / Deaktivieren der Schneidwerkautomatik</de>
             <fr>Activer / Désactiver le coupeur automatique</fr>
             <it>Attiva/Disattiva testata automatica</it>
         </text>
         <text name="AC_ENABLE_AUTO_CUTTER">
             <en>Enable automatic cutter</en>
-            <de>Automatikschneider aktivieren</de>
+            <de>Schneidwerkautomatik aktivieren</de>
             <fr>Activer le coupeur automatique</fr>
             <it>Attiva testata automatica</it>
         </text>
         <text name="AC_DISABLE_AUTO_CUTTER">
             <en>Disable automatic cutter</en>
-            <de>Automatische Schneidvorrichtung deaktivieren</de>
+            <de>Schneidwerkautomatik deaktivieren</de>
             <fr>Désactiver le coupeur automatique</fr>
             <it>Disattiva testata automatica</it>
         </text>
@@ -63,7 +63,7 @@ Ce n'est pas vraiment une fonctionnalité réaliste, mais si vous aussi vous aim
     <translatedBy>
         <en>TyKonKet</en>
         <it>TyKonKet</it>
-        <de></de>
+        <de>MadMax</de>
         <fr></fr>
     </translatedBy>
 </modDesc>
