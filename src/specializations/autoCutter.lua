@@ -150,20 +150,6 @@ function AutoCutter:mouseEvent(posX, posY, isDown, isUp, button)
 end
 
 function AutoCutter:delete()
-    if self.automaticCutterActive then
-        if self.schemaOverlays.overlay ~= nil then
-            self.schemaOverlays.overlay:delete();
-        end
-        if self.schemaOverlays.overlaySelected ~= nil then
-            self.schemaOverlays.overlaySelected:delete();
-        end
-        if self.schemaOverlays.overlayAuto ~= nil then
-            self.schemaOverlays.overlayAuto:delete();
-        end
-        if self.schemaOverlays.overlaySelectedAuto ~= nil then
-            self.schemaOverlays.overlaySelectedAuto:delete();
-        end
-    end
     if AutoCutter.downSample ~= nil then
         delete(AutoCutter.downSample);
         AutoCutter.downSample = nil;
