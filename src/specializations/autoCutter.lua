@@ -19,19 +19,14 @@ end
 function AutoCutter.initSpecialization()
 end
 
-function AutoCutter.print(txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, txt9)
-    if AutoCutter.debug then
-        local args = {txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, txt9};
-        for i, v in ipairs(args) do
-            if v then
-                print("[" .. AutoCutter.name .. "] -> " .. tostring(v));
-            end
-        end
-    end
+function AutoCutter:print(text, ...)
+    local start = string.format("[%s(%s)] -> ", self.name, getDate("%H:%M:%S"));
+    local ptext = string.format(text, ...);
+    print(string.format("%s%s", start, ptext));
 end
 
 function AutoCutter:preLoad(savegame)
-    AutoCutter.print("AutoCutter:preLoad()");
+    AutoCutter:print("AutoCutter:preLoad()");
     self.fruitAhead = false;
     self.extendedCutterTestAreas = {};
     self.doCheckSpeedLimit = Utils.overwrittenFunction(self.doCheckSpeedLimit, AutoCutter.doCheckSpeedLimit)
@@ -39,11 +34,11 @@ function AutoCutter:preLoad(savegame)
 end
 
 function AutoCutter:load(savegame)
-    AutoCutter.print(AutoCutter.name .. " loaded on " .. self.typeName);
+    AutoCutter:print("%s loaded on %s", AutoCutter.name, self.typeName);
 end
 
 function AutoCutter:postLoad(savegame)
-    AutoCutter.print("AutoCutter:postLoad()");
+    AutoCutter:print("AutoCutter:postLoad()");
     AutoCutter.loadSamples();
     AutoCutter.updateExtendedTestAreas(self);
     if savegame ~= nil and not savegame.resetVehicles then

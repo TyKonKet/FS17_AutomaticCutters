@@ -10,17 +10,12 @@ AutomaticCutters.specialization.title = "AutoCutter";
 AutomaticCutters.specialization.name = "autoCutter";
 -- vehicleTypeName = true (conveyorTrailerHireable = true)
 AutomaticCutters.specialization.blackList = {};
-AutomaticCutters.debug = false;
+AutomaticCutters.debug = true;
 
-function AutomaticCutters:print(txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, txt9)
-    if self.debug then
-        local args = {txt1, txt2, txt3, txt4, txt5, txt6, txt7, txt8, txt9};
-        for i, v in ipairs(args) do
-            if v then
-                print("[" .. self.name .. "] -> " .. tostring(v));
-            end
-        end
-    end
+function AutomaticCutters:print(text, ...)
+    local start = string.format("[%s(%s)] -> ", self.name, getDate("%H:%M:%S"));
+    local ptext = string.format(text, ...);
+    print(string.format("%s%s", start, ptext));
 end
 
 function AutomaticCutters:registerSpecialization()
@@ -29,7 +24,7 @@ function AutomaticCutters:registerSpecialization()
         if vehicleType ~= nil then
             if specialization.prerequisitesPresent(vehicleType.specializations) and not self.specialization.blackList[vehicleType.name] then
                 table.insert(vehicleType.specializations, specialization);
-                self:print(self.specialization.title .. " added to " .. vehicleType.name);
+                self:print("%s added to %s", self.specialization.title, vehicleType.name);
             end
         end
     end
@@ -68,7 +63,7 @@ function AutomaticCutters.PrintVehicleValue(self, p1)
     if g_currentMission.controlledVehicle == nil then
         return "controlledVehicle == nil";
     else
-        self:print(tostring(g_currentMission.controlledVehicle[p1]));
+        self:print(g_currentMission.controlledVehicle[p1]);
     end
 end
 
