@@ -1,7 +1,7 @@
 --
 -- AutomaticCutters
 --
--- @author  TyKonKet
+-- @author TyKonKet
 -- @date 22/03/2017
 AutoCutter = {};
 AutoCutter.name = "AutoCutter";
@@ -74,16 +74,18 @@ function AutoCutter:setSchemaOverlay(automaticCutterEnabled)
 end
 
 function AutoCutter:update(dt)
-    if InputBinding.hasEvent(InputBinding.AC_TOGGLE, false) and self.automaticCutterActive then
-        self.automaticCutterEnabled = not self.automaticCutterEnabled;
-        AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
+    if self:getCombine() ~= nil and self:getCombine().isEntered then
+        if InputBinding.hasEvent(InputBinding.AC_TOGGLE, false) and self.automaticCutterActive then
+            self.automaticCutterEnabled = not self.automaticCutterEnabled;
+            AutoCutter.setSchemaOverlay(self, self.automaticCutterEnabled);
+        end
     end
 end
 
 function AutoCutter:updateTick(dt)
-    if self.automaticCutterActive then
+    local combine = self:getCombine();
+    if self.automaticCutterActive and combine ~=nil and combine.isEntered and not combine.isHired then
         AutoCutter.updateExtendedTestAreas(self);
-        local combine = self:getCombine();
         if self.reelStarted and combine:getLastSpeed() > 1 then
             local fruitAhead = false;
             if self.movingDirection == self.cutterMovingDirection then
@@ -98,7 +100,7 @@ function AutoCutter:updateTick(dt)
             if self.fruitAhead ~= fruitAhead then
                 for cutter, implement in pairs(combine.attachedCutters) do
                     if cutter == self and not self.isHired and self.automaticCutterEnabled then
-                        combine:setJointMoveDown(implement.jointDescIndex, fruitAhead, true);
+                        combine:setJointMoveDown(implement.jointDescIndex, fruitAhead, false);
                         if fruitAhead then
                             AutoCutter.playSample(self, combine, AutoCutter.upSample);
                         else

@@ -1,7 +1,7 @@
 --
 -- AutomaticCutters
 --
--- @author  TyKonKet
+-- @author TyKonKet
 -- @date 22/03/2017
 AutomaticCutters = {};
 AutomaticCutters.name = "AutomaticCutters";
