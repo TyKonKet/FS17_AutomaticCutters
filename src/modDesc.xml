@@ -4,6 +4,7 @@
     <version>1.0.2</version>
     <title>
         <en>Automatic Cutters</en>
+        <nl>Automatisch Snijwerk</nl>
     </title>
     <description>
         <en>
@@ -27,6 +28,13 @@ Vous pouvez également choisir sur chaque découpeur à utiliser ou non cette fo
 Ce n'est pas vraiment une fonctionnalité réaliste, mais si vous aussi vous aimez jouer "mode arcade" peut-être ce mod est bon pour vous.
 ]]>
         </fr>
+         <nl>
+            <![CDATA[Maakt het verlagen en verhogen van Combin snijwerk automatisch.
+Met deze mod voorkom je lelijke draaiingen aan het einde van het veld.
+Je kunt op elk snijwerk kiezen of je deze functie gebruikt doormiddel van SHIFT + V.
+Dit is waarschijnlijk geen realistische mod, maar wanneer je het leuk vindt om in arcade-modus te spelen, is deze mod misschien echt iets voor jou. 
+]]>
+        </nl>
     </description>
     <iconFilename>icon.dds</iconFilename>
     <multiplayer supported="true" />
@@ -46,18 +54,21 @@ Ce n'est pas vraiment une fonctionnalité réaliste, mais si vous aussi vous aim
             <de>Aktivieren / Deaktivieren der Schneidwerkautomatik</de>
             <fr>Activer / Désactiver le coupeur automatique</fr>
             <it>Attiva/Disattiva testata automatica</it>
+            <nl>Aanzetten / Uitzetten automatisch snijwerk</nl>
         </text>
         <text name="AC_ENABLE_AUTO_CUTTER">
             <en>Enable automatic cutter</en>
             <de>Schneidwerkautomatik aktivieren</de>
             <fr>Activer le coupeur automatique</fr>
             <it>Attiva testata automatica</it>
+            <nl>Aanzetten automatisch snijwerk</nl>
         </text>
         <text name="AC_DISABLE_AUTO_CUTTER">
             <en>Disable automatic cutter</en>
             <de>Schneidwerkautomatik deaktivieren</de>
             <fr>Désactiver le coupeur automatique</fr>
             <it>Disattiva testata automatica</it>
+            <nl>Uitzetten automatisch snijwerk</nl>
         </text>
     </l10n>
     <translatedBy>
@@ -65,5 +76,6 @@ Ce n'est pas vraiment une fonctionnalité réaliste, mais si vous aussi vous aim
         <it>TyKonKet</it>
         <de>MadMax</de>
         <fr></fr>
+        <nl>FarmingvidsHD</nl>
     </translatedBy>
 </modDesc>
